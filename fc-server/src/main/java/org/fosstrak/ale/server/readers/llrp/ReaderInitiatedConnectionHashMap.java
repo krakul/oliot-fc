@@ -6,6 +6,7 @@
 
 package org.fosstrak.ale.server.readers.llrp;
 
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,11 +38,12 @@ public class ReaderInitiatedConnectionHashMap extends ConcurrentHashMap<String, 
 		return super.remove(toUpperCase);
 	}
 
-	@Override
-	public Set<String> keySet() {
+	public Set<String> keysSet() {
 		Set<String> toReturn = new HashSet<String>();
-		for(String key : super.keySet()) {
-			toReturn.add(key.toUpperCase());
+		Enumeration<String> keys = super.keys();
+		while (keys.hasMoreElements()){
+			String element = keys.nextElement();
+			toReturn.add(element.toUpperCase());
 		}
 		return toReturn;
 	}
