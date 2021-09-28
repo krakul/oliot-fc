@@ -244,7 +244,7 @@ case 315:
 <%=getStandardVersion2963mtemp%>
 <%
 	}else{
-	String tempResultreturnp297s = org.eclipse.jst.ws.util.JspUtils.markup(String.valueOf(getStandardVersion2963mtemp));
+	String tempResultreturnp297s = String.valueOf(getStandardVersion2963mtemp);
 	%>
 <%=tempResultreturnp297s%>
 <%
@@ -264,7 +264,7 @@ case 316:
 <%=getVendorVersion3012mtemp %>
 <%
 	}else{
-	String tempResultreturnp3022 = org.eclipse.jst.ws.util.JspUtils.markup(String.valueOf(getVendorVersion3012mtemp));
+	String tempResultreturnp3022 = String.valueOf(getVendorVersion3012mtemp);
 	%>
 <%= tempResultreturnp3022 %>
 <%

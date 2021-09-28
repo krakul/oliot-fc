@@ -395,7 +395,7 @@ if(getStandardVersion296mtemp == null){
 <%=getStandardVersion296mtemp%>
 <%
 }else{
-String tempResultreturnp297 = org.eclipse.jst.ws.util.JspUtils.markup(String.valueOf(getStandardVersion296mtemp));
+String tempResultreturnp297 = String.valueOf(getStandardVersion296mtemp);
 %>
 <%=tempResultreturnp297%>
 <%
@@ -414,7 +414,7 @@ if(getVendorVersion301mtemp == null){
 <%=getVendorVersion301mtemp %>
 <%
 }else{
-String tempResultreturnp302 = org.eclipse.jst.ws.util.JspUtils.markup(String.valueOf(getVendorVersion301mtemp));
+String tempResultreturnp302 = String.valueOf(getVendorVersion301mtemp);
 %>
 <%= tempResultreturnp302 %>
 <%

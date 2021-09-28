@@ -93,7 +93,7 @@ public class FortressRBACClient implements RoleBasedAccessController {
 	public void updatePermission(String permObjName, String permOpName, Set<String> roles) throws SecurityException {
 
 		Permission perm = new Permission();
-		perm.setObjectName(permObjName);
+		perm.setObjName(permObjName);
 		perm.setOpName(permOpName);
 		perm.setRoles(roles);
 		try {
@@ -196,7 +196,7 @@ public class FortressRBACClient implements RoleBasedAccessController {
 	public void definePermission(String permObjName, String permOpName) throws SecurityException {
 
 		Permission perm = new Permission();
-		perm.setObjectName(permObjName);
+		perm.setObjName(permObjName);
 		perm.setOpName(permOpName);
 		try {
 			perm = adminMgr.addPermission(perm);
@@ -219,7 +219,7 @@ public class FortressRBACClient implements RoleBasedAccessController {
 		adminMgr.deletePermObj(pObj);
 		*/
 		Permission p = new Permission();
-		p.setObjectName(permObjName);
+		p.setObjName(permObjName);
 		p.setOpName(permOpName);
 		try {
 			adminMgr.deletePermission(p);
@@ -306,7 +306,7 @@ public class FortressRBACClient implements RoleBasedAccessController {
 	@Override
 	public void addPermObj(String objName) throws SecurityException {
 		PermObj pObj = new PermObj();
-		pObj.setObjectName(objName);
+		pObj.setObjName(objName);
 		pObj.setOu("fc-server");
 		try {
 			adminMgr.addPermObj(pObj);
@@ -321,7 +321,7 @@ public class FortressRBACClient implements RoleBasedAccessController {
 	@Override
 	public void deletePermObj(String objName) throws SecurityException {
 		PermObj pObj = new PermObj();
-		pObj.setObjectName(objName);
+		pObj.setObjName(objName);
 		pObj.setOu("fc-server");
 		try {
 			adminMgr.deletePermObj(pObj);
@@ -382,7 +382,7 @@ public class FortressRBACClient implements RoleBasedAccessController {
 	}
 	public List<org.fosstrak.ale.server.ac.Permission> findPermissions(String permObjName, String permOpName) throws SecurityException {
 		Permission pe = new Permission();
-		pe.setObjectName(permObjName);
+		pe.setObjName(permObjName);
 		pe.setOpName(permOpName);
 		
 		try {
@@ -390,7 +390,7 @@ public class FortressRBACClient implements RoleBasedAccessController {
 			List<org.fosstrak.ale.server.ac.Permission> toReturn = new ArrayList<org.fosstrak.ale.server.ac.Permission>();
 			
 			for(Permission p : listPerm) {
-				toReturn.add(new org.fosstrak.ale.server.ac.Permission(p.getObjectName(), p.getOpName(), p.getRoles()));
+				toReturn.add(new org.fosstrak.ale.server.ac.Permission(p.getObjName(), p.getOpName(), p.getRoles()));
 			}
 			
 			return toReturn;
