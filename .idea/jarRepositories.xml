@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteRepositoriesConfiguration">
+    <remote-repository>
+      <option name="id" value="sun-maven1" />
+      <option name="name" value="java.net Maven Repository" />
+      <option name="url" value="http://download.java.net/maven/1" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sonatype-nexus-snapshots" />
+      <option name="name" value="Sonatype Nexus Snapshots" />
+      <option name="url" value="https://oss.sonatype.org/content/repositories/snapshots" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="fosstrak-repository" />
+      <option name="name" value="Fosstrak repository" />
+      <option name="url" value="https://oss.sonatype.org/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo.maven.apache.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="ibiblio" />
+      <option name="name" value="ibiblio Maven Repository" />
+      <option name="url" value="http://www.ibiblio.org/maven" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="apache-incubating" />
+      <option name="name" value="Apache Incubating Repository" />
+      <option name="url" value="http://people.apache.org/repo/m2-incubating-repository" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sun-maven2" />
+      <option name="name" value="Sun Maven 2 Repository" />
+      <option name="url" value="http://download.java.net/maven/2" />
+    </remote-repository>
+  </component>
+</project>
