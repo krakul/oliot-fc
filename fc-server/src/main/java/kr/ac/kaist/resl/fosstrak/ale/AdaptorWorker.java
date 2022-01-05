@@ -96,6 +96,8 @@ public class AdaptorWorker implements Runnable {
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+				// Have to be able to stop this thread, otherwise Tomcat can't shut it down.
+				isRunning = false;
 			}
 		}
 		

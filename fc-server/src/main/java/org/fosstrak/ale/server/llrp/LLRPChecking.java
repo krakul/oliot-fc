@@ -71,6 +71,7 @@ public class LLRPChecking implements Runnable {
 	    		Thread.sleep(10000);
         	}  catch (InterruptedException e) {
         		LOG.error("Error when LLRP thread is sleeping - aborting ", e);
+				isRunning = false;
         		return;
         	}
         }

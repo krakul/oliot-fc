@@ -364,10 +364,11 @@ public final class EventCycleImpl implements EventCycle, Runnable {
 			// process one tag
 			tags.add((Tag) arg);
 		} else if (arg instanceof List) {
-			LOG.debug("processing a list of tags");
-			for (Object entry : (List<?>) arg) {
+			List<?> argList = (List<?>) arg;
+			LOG.debug("processing a list of " + argList.size() + " tags");
+			for (Object entry : argList) {
 				if (entry instanceof Tag) {
-					tags.add((Tag) entry);					
+					tags.add((Tag) entry);
 				}
 			}
 		}
