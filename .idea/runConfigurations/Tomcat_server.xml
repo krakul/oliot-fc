@@ -1,0 +1,99 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Tomcat server" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.5.71" ALTERNATIVE_JRE_ENABLED="false" show_console_on_std_err="true" show_console_on_std_out="true">
+    <option name="OPEN_IN_BROWSER" value="false" />
+    <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/fc-server" />
+    <option name="UPDATING_POLICY" value="restart-server" />
+    <deployment>
+      <artifact name="fc-server:war exploded">
+        <settings>
+          <option name="CONTEXT_PATH" value="/fc-server" />
+        </settings>
+      </artifact>
+      <artifact name="fc-webclient:war exploded">
+        <settings>
+          <option name="CONTEXT_PATH" value="/fc-webclient" />
+        </settings>
+      </artifact>
+    </deployment>
+    <server-settings>
+      <option name="BASE_DIRECTORY_NAME" value="bc42de5b-8027-4615-af08-923c9580a392" />
+      <option name="HTTP_PORT" value="8080" />
+    </server-settings>
+    <log_file checked="false" alias="Tomcat Manager Log" path="%IDEA_RUN:CATALINA_BASE%/logs/manager.*" skipped="false" />
+    <log_file checked="false" alias="Tomcat Host Manager Log" path="%IDEA_RUN:CATALINA_BASE%/logs/host-manager.*" skipped="false" />
+    <log_file checked="false" alias="Tomcat Localhost Access Log" path="%IDEA_RUN:CATALINA_BASE%/logs/localhost_access_log.*" skipped="false" />
+    <log_file alias="fc-server" path="%IDEA_RUN:CATALINA_BASE%/logs/fc-server.*" />
+    <log_file checked="false" alias="Tomcat Localhost Log" path="%IDEA_RUN:CATALINA_BASE%/logs/localhost.*" />
+    <predefined_log_file enabled="true" id="Tomcat Catalina" />
+    <RunnerSettings RunnerId="Debug">
+      <option name="DEBUG_PORT" value="56935" />
+    </RunnerSettings>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Profile">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+      <option name="USE_ENV_VARIABLES" value="true" />
+      <STARTUP>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </STARTUP>
+      <SHUTDOWN>
+        <option name="USE_DEFAULT" value="true" />
+        <option name="SCRIPT" value="" />
+        <option name="VM_PARAMETERS" value="" />
+        <option name="PROGRAM_PARAMETERS" value="" />
+      </SHUTDOWN>
+    </ConfigurationWrapper>
+    <method v="2">
+      <option name="Make" enabled="true" />
+      <option name="BuildArtifacts" enabled="true">
+        <artifact name="fc-server:war exploded" />
+        <artifact name="fc-webclient:war exploded" />
+      </option>
+    </method>
+  </configuration>
+</component>
