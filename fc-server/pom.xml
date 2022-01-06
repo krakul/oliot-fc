@@ -215,6 +215,12 @@
       <artifactId>jdom</artifactId>
       <version>1.0</version>
     </dependency>
+    <dependency>
+        <groupId>sensthys</groupId>
+        <artifactId>sensx</artifactId>
+        <version>1.0.3</version>
+    </dependency>
+
   </dependencies>
 
   <!-- =========================================================== -->
