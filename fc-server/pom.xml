@@ -220,6 +220,16 @@
         <artifactId>sensx</artifactId>
         <version>1.0.3</version>
     </dependency>
+    <dependency>
+        <groupId>caen</groupId>
+        <artifactId>proton</artifactId>
+        <version>1.0</version>
+    </dependency>
+    <dependency>
+        <groupId>gnu</groupId>
+        <artifactId>io</artifactId>
+        <version>1.0</version>
+    </dependency>
 
   </dependencies>
 
