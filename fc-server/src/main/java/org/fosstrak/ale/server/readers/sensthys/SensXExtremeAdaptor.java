@@ -42,18 +42,14 @@ public class SensXExtremeAdaptor extends BaseReader implements OnTagReadResponse
     private TDTEngine tdt = null;
 
     /**
-     * initializes a LLRPAdaptor. this method must be called before the Adaptor can
+     * initializes adapter. this method must be called before the Adaptor can
      * be used.
      * @param name the name for the reader encapsulated by this adaptor.
      * @param spec the specification that describes the current reader.
      * @throws ImplementationException whenever an internal error occurs.
-
      */
     public void initialize(String name, LRSpec spec) throws ImplementationException {
         super.initialize(name, spec);
-
-        /* Dispose previous reader */
-        reader = null;
 
         /* Check arguments */
         if ((name == null) || (spec == null)) {
@@ -62,7 +58,7 @@ public class SensXExtremeAdaptor extends BaseReader implements OnTagReadResponse
         }
 
         /* Get IP */
-        String ip = logicalReaderProperties.get("ip");
+        String ip = logicalReaderProperties.get("IP");
         if ((ip == null) || (ip.isEmpty()))
         {
             log.error("Reader IP is not defined.");
@@ -70,7 +66,7 @@ public class SensXExtremeAdaptor extends BaseReader implements OnTagReadResponse
         }
 
         /* Get port */
-        String portString = logicalReaderProperties.get("port");
+        String portString = logicalReaderProperties.get("Port");
         if ((portString == null) || (portString.isEmpty())) {
             log.error("Reader port is not defined.");
             return;
