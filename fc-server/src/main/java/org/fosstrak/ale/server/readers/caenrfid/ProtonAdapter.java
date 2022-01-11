@@ -93,7 +93,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
 
     @Override
     public void start() {
-        log.debug("Starting CAEN RFID Proton reader...");
+        log.info("Starting CAEN RFID Proton reader...");
 
         /* Already started ? */
         if (isStarted()) {
@@ -107,6 +107,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
 
             /* Connection successful ? */
             if (!isConnected()) {
+                log.error("Failed to started");
                 return;
             }
         }
@@ -144,7 +145,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
 
     @Override
     public void stop() {
-        log.debug("Stopping CAEN RFID Proton reader...");
+        log.info("Stopping CAEN RFID Proton reader...");
 
         /* Already stopped ? */
         if (!isStarted()) {
@@ -156,7 +157,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
         try {
             reader.InventoryAbort();
         } catch (Exception e) {
-            log.error("Failed to stop continuous read: " + e.getMessage());
+            log.error("Failed to abort continuous read: " + e.getMessage());
             e.printStackTrace();
         }
 
@@ -173,7 +174,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
 
         /* Try to connect */
         try {
-            log.info("Connecting to " + ip + " TCP port " + port);
+            log.info("Connecting to " + ip + " TCP port " + port + "...");
             reader.Connect(CAENRFIDPort.CAENRFID_TCP, ip + ":" + port);
         } catch (Exception e) {
             log.error("Failed to connect: " + e.getMessage());
@@ -185,7 +186,13 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
         try {
             CAENRFIDReaderInfo info = reader.GetReaderInfo();
             String fw = reader.GetFirmwareRelease();
+
             log.info("Model " + info.GetModel() + ", serial " + info.GetSerialNumber() + ", firmware " + fw);
+            log.info("Sources:");
+
+            for (CAENRFIDLogicalSource source : reader.GetSources()) {
+                log.info("  " + source.GetName());
+            }
         } catch (Exception e) {
             log.error("Failed to get reader info: " + e.getMessage());
             setDisconnected();
@@ -205,7 +212,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
 
         /* Try to disconnect */
         try {
-            log.info("Disconnecting from " + ip + " TCP port " + port);
+            log.info("Disconnecting from " + ip + " TCP port " + port + "...");
             reader.Disconnect();
         } catch (Exception e) {
             log.error("Error during disconnection: " + e.getMessage());
@@ -296,6 +303,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
                     tag.setTagIDAsTagURI(epc_tag);
 
                 } catch (Exception e) {
+                    /* Treat it as "debug" event because invalid/unprogrammed tags should not be treated as errors */
                     log.debug("Tag decoding error: " + e.getMessage());
                 }
 
