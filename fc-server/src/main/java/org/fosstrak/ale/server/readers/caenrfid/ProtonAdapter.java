@@ -29,8 +29,8 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
 
     /** Variables */
     private String ip;
-    private int port;
-    private String[] sourceNames;
+    private int port = 1000;
+    private String source = "Source_0";
     private CAENRFIDReader reader;
     private TDTEngine tdt;
 
@@ -66,27 +66,24 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
             log.error("Reader IP is not defined.");
         }
 
-        /* Get port */
+        /* Get port (optional) */
         String portString = logicalReaderProperties.get("Port");
         if ((portString == null) || (portString.isEmpty())) {
-            log.error("Reader port is not defined.");
+            log.info("Reader port is not defined, using default: " + port);
+        } else {
+            port = Integer.parseInt(portString);
         }
 
-        port = Integer.parseInt(portString);
-
-        /* Get sources */
-        String sources = logicalReaderProperties.get("Sources");
-        if ((sources == null) || (sources.isEmpty())) {
-            log.error("No sources defined.");
-        }
-        sourceNames = sources.split(",");
-
-        /* Check sources */
-        for (String sourceName : sourceNames) {
+        /* Get source (optional) */
+        String sourceName = logicalReaderProperties.get("Source");
+        if ((sourceName == null) || (sourceName.isEmpty())) {
+            log.info("No source defined, using default: " + source);
+        } else {
             try {
-                CAENRFIDLogicalSource source = reader.GetSource(sourceName);
+                reader.GetSource(sourceName); // Ignore return value
+                source = sourceName; // Use it, if made so far
             } catch (CAENRFIDException e) {
-                log.error("Invalid source (" + sourceName + "): " + e.getMessage());
+                log.error("Invalid source (" + sourceName + "), using default: " + source);
             }
         }
     }
@@ -122,14 +119,15 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
         /* Start continuous read */
         try {
 
-            /* Start inventory on all requested sources */
-            for (String sourceName : sourceNames) {
-                CAENRFIDLogicalSource source = reader.GetSource(sourceName);
-                source.SetReadCycle(0);
-                if (!source.EventInventoryTag(mask, (short) 0, (short) 0, (short)flags)) {
-                    log.error("Could not start continuous read on " + sourceName);
-                }
+            /* Start inventory on requested source */
+            CAENRFIDLogicalSource logicalSource = reader.GetSource(source);
+            logicalSource.SetReadCycle(0);
+            if (!logicalSource.EventInventoryTag(mask, (short) 0, (short) 0, (short)flags)) {
+                log.error("Could not start continuous read on " + source);
             }
+
+            /* Note: EventInventoryTag would block if called second time (e.g. when want to read multiple sources).
+                     and that's why here currently support for only one source at time. */
 
         } catch (Exception e) {
             log.error("Failed to start continuous read: " + e.getMessage());
@@ -139,7 +137,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
         }
 
         /* Started */
-        log.info("CAEN RFID Proton reader started");
+        log.info("CAEN RFID Proton reader started on source " + source);
         setStarted();
     }
 
@@ -213,7 +211,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
         /* Try to disconnect */
         try {
             log.info("Disconnecting from " + ip + " TCP port " + port + "...");
-            reader.Disconnect();
+            reader.Disconnect(); // This will also abort inventory, if that happens to be running meanwhile
         } catch (Exception e) {
             log.error("Error during disconnection: " + e.getMessage());
         }
