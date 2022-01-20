@@ -309,6 +309,7 @@ public class SensXExtremeAdaptor extends BaseReader implements OnTagReadResponse
             tag.setTagIDAsTagURI(epc_tag);
 
         } catch (Exception e) {
+            /* Treat it as "debug" event because invalid/unprogrammed tags should not be treated as errors */
             log.debug("Tag decoding error: " + e.getMessage());
         }
 
