@@ -33,26 +33,56 @@ public class HexUtil {
 	 * This method converts a byte array into a hexadecimal string.
 	 * 
 	 * @param byteArray to convert
-	 * @return hexadecimal string
+	 * @return hexadecimal string (character count twice as many as bytes)
 	 */
 	public static String byteArrayToHexString(byte[] byteArray) {
-		if (null == byteArray) {
-			return "";
+		StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < byteArray.length; i++) {
+			buffer.append(Character.forDigit((byteArray[i] >> 4) & 0xF, 16));
+			buffer.append(Character.forDigit(byteArray[i] & 0xF, 16));
 		}
-		return new BigInteger(byteArray).toString(16).toUpperCase();
-				
+
+		return buffer.toString();
+	}
+
+	/**
+	 * This method converts a byte array into a binary string.
+	 *
+	 * @param byteArray to convert
+	 * @return hexadecimal string (character count 8x as many as bytes)
+	 */
+	public static String byteArrayToBinString(byte[] byteArray) {
+		StringBuffer buffer = new StringBuffer();
+
+		for (int i = 0; i < byteArray.length; i++) {
+			for (int b = 7; b >= 0; b--) {
+				buffer.append(Character.forDigit( (byteArray[i] >> b) & 1, 2));
+			}
+		}
+
+		return buffer.toString();
 	}
 	
 	/**
 	 * This method converts a hexadecimal string into a byte array.
 	 * 
 	 * @param hexString to convert
+	 * @param minNumBytes Minimum number of bytes. Adds zero bytes to the beginning to achieve this length.
 	 * @return byte array
 	 */
-	public static byte[] hexStringToByteArray(String hexString) {
-		
-		return new BigInteger(hexString, 16).toByteArray();
-		
+	public static byte[] hexStringToByteArray(String hexString, int minNumBytes) {
+
+		byte[] data = new BigInteger(hexString, 16).toByteArray();
+
+		// Ensure minimum number of bytes
+		if (data.length < minNumBytes) {
+			byte[] newData = new byte[minNumBytes];
+			System.arraycopy(data, 0, newData, minNumBytes - data.length, data.length);
+			return newData;
+		}
+
+		return data;
 	}
 	
 }

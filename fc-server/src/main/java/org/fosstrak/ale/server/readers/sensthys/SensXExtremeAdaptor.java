@@ -26,6 +26,8 @@ import RFIDReader.RFIDReader;
 import RFIDReader.TagReadInfo;
 import org.fosstrak.tdt.TDTEngine;
 
+import static org.fosstrak.ale.util.HexUtil.*;
+
 /**
  * SensThys SensX EXTREME reader adapter
  */
@@ -286,19 +288,14 @@ public class SensXExtremeAdaptor extends BaseReader implements OnTagReadResponse
         tag.addTrace("Antenna " + readInfo.antennaNumber);
         tag.setTimestamp(readInfo.timeStamp.toEpochSecond(ZoneOffset.UTC)); // Get UTC timestamp
 
-        /* Get hexadecimal EPC value.
+        /* Get EPC as bytes.
          * SensX sends 11-22-33-AA-BB-CC.... first get rid of dashes. */
-        String hex = readInfo.EPC.replace("-", "").toLowerCase();
-        tag.setTagAsHex(hex);
+        byte[] id = hexStringToByteArray(readInfo.EPC.replace("-", ""), 12); // 12B = 96 bits
 
-        /* Get binary value */
-        BigInteger bin = new BigInteger(hex, 16);
-        String binString = bin.toString(2);
-        if (binString.startsWith("1") && (binString.length() < 96)) {
-            binString = "00" + binString; /* TODO What if it's still not enough for 96 bits ? */
-        }
-        tag.setTagAsBinary(binString);
-        tag.setTagID(binString.getBytes());
+        /* ID's */
+        tag.setTagID(id);
+        tag.setTagAsHex(byteArrayToHexString(id));
+        tag.setTagAsBinary(byteArrayToBinString(id));
 
         /* Use conversion to get more data */
         try {

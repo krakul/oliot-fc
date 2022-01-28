@@ -19,6 +19,9 @@ import org.fosstrak.hal.Observation;
 
 import org.fosstrak.tdt.TDTEngine;
 
+import static org.fosstrak.ale.util.HexUtil.byteArrayToBinString;
+import static org.fosstrak.ale.util.HexUtil.byteArrayToHexString;
+
 /**
  * CAEN RFID Proton reader adapter
  */
@@ -31,6 +34,7 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
     private String ip;
     private int port = 1000;
     private String source = "Source_0";
+    private boolean readTID = false;
     private CAENRFIDReader reader;
     private TDTEngine tdt;
 
@@ -86,6 +90,18 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
                 log.error("Invalid source (" + sourceName + "), using default: " + source);
             }
         }
+
+        /* Should read TID ? */
+        String readTIDString = logicalReaderProperties.get("ReadTID");
+        if (readTIDString != null) {
+            if (readTIDString.equalsIgnoreCase("true")) {
+                readTID = true;
+            } else if (readTIDString.equalsIgnoreCase("false")) {
+                readTID = false;
+            } else {
+                log.error("Invalid ReadTID value (" + readTIDString + "), using default: false");
+            }
+        }
     }
 
     @Override
@@ -109,12 +125,28 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
             }
         }
 
+        try {
+            reader.SetIODIRECTION(0x000C);
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("IO value is " + reader.GetIO());
+        } catch (CAENRFIDException e) {
+            e.printStackTrace();
+        }
+
         /* Read mask and flags */
         byte[] mask = new byte[] { 0, 0, 0, 0 };
         int flags =
             CAENRFIDLogicalSource.InventoryFlag.RSSI.getValue() |
             CAENRFIDLogicalSource.InventoryFlag.FRAMED.getValue() |
             CAENRFIDLogicalSource.InventoryFlag.CONTINUOS.getValue();
+
+        if (readTID) {
+            flags |= CAENRFIDLogicalSource.InventoryFlag.TID_READING.getValue();
+        }
 
         /* Start continuous read */
         try {
@@ -282,17 +314,16 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
                 tag.setTimestamp(notify.getDate().toInstant().toEpochMilli());
 
                 /* ID's */
-                BigInteger bin = new BigInteger(notify.getTagID());
                 tag.setTagID(notify.getTagID());
-                tag.setTagAsHex(bin.toString(16));
+                tag.setTagAsHex(byteArrayToHexString(notify.getTagID()));
+                tag.setTagAsBinary(byteArrayToBinString(notify.getTagID()));
 
-                String binString = bin.toString(2);
-                if (binString.startsWith("1") && (binString.length() < 96)) {
-                    binString = "00" + binString; /* TODO What if it's still not enough for 96 bits ? */
+                /* TID ? */
+                if (readTID && (notify.getTID() != null)) {
+                    tag.setTidBank(byteArrayToHexString(notify.getTID()));
                 }
-                tag.setTagAsBinary(binString);
 
-                /* Use conversion to get more data */
+                /* URI's */
                 try {
                     String pureID = TagHelper.convert_to_PURE_IDENTITY(null, null, null, tag.getTagAsBinary());
                     tag.setTagIDAsPureURI(pureID);
