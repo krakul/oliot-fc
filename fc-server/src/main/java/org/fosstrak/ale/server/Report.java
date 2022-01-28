@@ -213,23 +213,20 @@ public class Report {
 								String fieldValue = tag.getEpcBank();
 								
 							} else if(fieldName.equalsIgnoreCase("tidBank")) {
-								// TODO: fieldname "tidBank"
 								// return the contents of tid bank
 								// datatype: "bits", format: "hex"
-								
-								System.out.println("fieldname \"tidBank\": access to tid bank is not implemented");
-								
+
+								String fieldValue = tag.getTidBank();
+								isMember = computeMembership(isMember, filterListMember,
+										fieldValue);
 								
 							} else if(fieldName.equalsIgnoreCase("userBank")) {
 								// return the contents of user memory bank
 								// datatype: "bits", format: "hex"
-								
+
 								String fieldValue = tag.getUserMemory();
-								
-								
 								isMember = computeMembership(isMember, filterListMember,
 										fieldValue);
-								
 								
 							} else if(fieldName.equalsIgnoreCase("afi")) {
 								// TODO:  application family identifier
@@ -721,239 +718,9 @@ public class Report {
 						ecReportSpecExtension.getStatProfileNames().getStatProfileName(),
 						reportType);
 			}
-			 
-			
-			//ORANGE: check if we need to add user memory in the report
-			ECReportOutputSpecExtension outputExtension = reportSpec.getOutput().getExtension(); 
-			if (outputExtension != null) {
-				if(groupMember.getExtension() == null) {					
-					ECReportGroupListMemberExtension extension = new ECReportGroupListMemberExtension();
-					groupMember.setExtension(extension);
-				}
-				ECReportGroupListMemberExtension extension = groupMember.getExtension();
-				if (outputExtension.getFieldList() != null) {
-					extension.setFieldList(new FieldList());
-					List<ECReportMemberField> ecReportMemberFields = extension.getFieldList().getField();
-					
-					// represent the user memory to binary format
-					String usermemInBinary = tag.getUserMemory();
-					if(usermemInBinary != null) {
 
-				    	usermemInBinary = usermemInBinary.replaceAll("\\s", "");
-				    	usermemInBinary = new StringBuilder("f").append(usermemInBinary).toString();		//usermem = "f".concat(usermem);
-				    	usermemInBinary = tdt.hex2bin(usermemInBinary);
-				    	usermemInBinary = usermemInBinary.substring(4);
-						
-						for (ECReportOutputFieldSpec outputFieldSpec : outputExtension.getFieldList().getField()) {
-							if(outputFieldSpec.getFieldspec() != null) {
-								if(outputFieldSpec.getFieldspec().getFieldname() != null) {
-									String fieldName = outputFieldSpec.getFieldspec().getFieldname();
-									
-									if (fieldName.equalsIgnoreCase("UserMemory") && outputFieldSpec.isIncludeFieldSpecInReport()) {
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-										ecReportMemberField.setValue(tag.getUserMemory());
-										
-										ecReportMemberFields.add(ecReportMemberField);
-									} else if(fieldName.equalsIgnoreCase("epc")) {
-										// default datatype: "epc"
-										// default format: "epc-tag"
-										
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-										try {
-											String bin = TagHelper.getBinaryRepresentation(tag);
-											if (null != bin) {
-												final String converted = TagHelper.convert_to_TAG_ENCODING(tag.getTagLength(), tag.getFilter(), tag.getCompanyPrefixLength(), bin, tdt);
-												
-												ecReportMemberField.setValue(converted);
-											}
-										} catch (Exception ex) {
-											LOG.error("caught exception during tag transformation: ", ex);
-										}
-										ecReportMemberFields.add(ecReportMemberField);
-										
-									}
-									else if(fieldName.equalsIgnoreCase("killPwd")) {
-										//TODO : killPwd fieldname
-										throw new ImplementationException("fieldname \"killPwd\": access to reserved bank is not implemented");
-										/*
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-										ecReportMemberField.setValue(null);
-
-										// same as "@0.32"
-										field.setBank(0);
-										field.setLength(32);
-										field.setOffset(0);
-										field.setDataType("uint");
-										field.setFormat("hex");
-										ecReportMemberFields.add(ecReportMemberField);
-										*/
-									} else if(fieldName.equalsIgnoreCase("accessPwd")) {
-										//TODO : accessPwd fieldname
-										throw new ImplementationException("fieldname \"accessPwd\": access to reserved bank is not implemented");
-										/*
-										ECReportMemberField field = new ECReportMemberField();
-										field.setName(fieldName);
-
-										// same as "@0.32.32"
-										field.setBank(0);
-										field.setLength(32);
-										field.setOffset(32);
-										field.setDataType("uint");
-										field.setFormat("hex");
-										*/
-									} else if(fieldName.equalsIgnoreCase("epcBank")) {
-										// return the contents of epc bank
-										// datatype: "bits", format: "hex"
-										
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-										ecReportMemberField.setValue(tag.getEpcBank());
-										
-										ecReportMemberFields.add(ecReportMemberField);
-										
-									} else if(fieldName.equalsIgnoreCase("tidBank")) {
-										// TODO: fieldname "tidBank"
-										// return the contents of tid bank
-										// datatype: "bits", format: "hex"
-										
-										throw new ImplementationException("fieldname \"tidBank\": access to tid bank is not implemented");
-										
-									} else if(fieldName.equalsIgnoreCase("userBank")) {
-										// return the contents of user memory bank
-										// datatype: "bits", format: "hex"
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-										ecReportMemberField.setValue(tag.getUserMemory());	// tag.getUserMemory() is already hex string, no need to convert
-										
-										ecReportMemberFields.add(ecReportMemberField);
-										
-									} else if(fieldName.equalsIgnoreCase("afi")) {
-										// TODO:  application family identifier
-										// same as "@1.8.24"
-										// datatype: "uint", format: "hex"
-										
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-										
-										String fieldValue = processEpcBank(tag, tdt, 8,
-												24, "uint", "hex");
-										ecReportMemberField.setValue(fieldValue);
-										ecReportMemberFields.add(ecReportMemberField);
-										//throw new ImplementationException("fieldname \"afi\": application family identifier (afi) is not implemented");
-										
-									} else if(fieldName.equalsIgnoreCase("nsi")) {
-										// TODO: Numbering System Identifier (NSI)
-										// same as "@1.9.23"
-										// datatype: "uint", format: "hex"
-										
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-										
-										String fieldValue = processEpcBank(tag, tdt, 9,
-												23, "uint", "hex");
-										ecReportMemberField.setValue(fieldValue);
-										
-										ecReportMemberFields.add(ecReportMemberField);
-										
-										//throw new ImplementationException("fieldname \"nsi\": Numbering System Identifier (NSI) is not implemented");
-										
-									} else if (fieldName.startsWith("@")) {
-										// TODO: fieldnames start with "@"
-										// datatype: "uint", format: "hex"
-										
-										String[] part = fieldName.substring(1).split("\\.");
-										int bank = Integer.parseInt(part[0]);
-										int length = Integer.parseInt(part[1]);
-										int offset = Integer.parseInt(part[2]);
-										String datatype = "uint";
-										String format = "hex";
-										
-										ECReportMemberField ecReportMemberField = new ECReportMemberField();
-										ecReportMemberField.setName(fieldName);
-
-										if(bank == 0) {
-											throw new ImplementationException("Access to bank "+bank+" is not supported.");
-										} else if(bank == 1) {
-											
-											String fieldValue = processEpcBank(tag, tdt, length,
-													offset, datatype, format);
-											ecReportMemberField.setValue(fieldValue);
-											
-										} else if(bank == 2) {
-											throw new ImplementationException("Access to bank "+bank+" is not supported.");
-										} else if(bank == 3) {
-											String fieldValue = processUserbank(tdt, usermemInBinary, length,
-													offset, datatype, format);
-											ecReportMemberField.setValue(fieldValue);
-											
-										} else {
-											throw new ImplementationException("bank "+bank+" does not exist.");
-										}
-										
-										ecReportMemberFields.add(ecReportMemberField);
-
-									} else {
-										// TODO: symbolic fieldnames
-										// datatype: "uint", format: "hex"
-										
-										ECReportMemberField field = new ECReportMemberField();
-										field.setName(fieldName);
-
-										// user-defined symbolic field name
-										String epc_tag = TagHelper.convert_to_TAG_ENCODING(tag.getTagLength(), tag.getFilter(), tag.getCompanyPrefixLength(), tag.getTagAsBinary(), tdt);
-										/*
-										Map<String,SymbolicField> symbolicFields = SymbolicFieldRepo.getInstance().findSymbolicFieldMap(epc_tag);
-										if(symbolicFields == null) {
-											throw new ImplementationException("symbolic field does not exist for the epc "+epc_tag);
-										}
-										SymbolicField symbolicField = symbolicFields.get(fieldName);
-										*/
-										SymbolicField symbolicField = SymbolicFieldRepo.getInstance().getSymbolicField(fieldName);
-										if(symbolicField != null) {
-											int bank = symbolicField.getBank();
-											int length = symbolicField.getLength();
-											int offset = symbolicField.getOffset();
-											String datatype = symbolicField.getDataType() != null? symbolicField.getDataType(): "uint";
-											String format = symbolicField.getFormat() != null? symbolicField.getFormat(): "hex";
-											
-											ECReportMemberField ecReportMemberField = new ECReportMemberField();
-											ecReportMemberField.setName(fieldName);
-
-											if(bank == 0) {
-												throw new ImplementationException("Access to bank "+bank+" is not supported.");
-											} else if(bank == 1) {
-												String fieldValue = processEpcBank(tag, tdt, length,
-														offset, datatype, format);
-												ecReportMemberField.setValue(fieldValue);
-												
-											} else if(bank == 2) {
-												throw new ImplementationException("Access to bank "+bank+" is not supported.");
-											} else if(bank == 3) {
-												String fieldValue = processUserbank(tdt, usermemInBinary, length,
-														offset, datatype, format);
-												ecReportMemberField.setValue(fieldValue);
-												
-											} else {
-												throw new ImplementationException("bank "+bank+" does not exist.");
-											}
-											ecReportMemberFields.add(ecReportMemberField);
-										} else {
-											LOG.debug("There is no such symbolic fieldname "+fieldName+". skip processing userdata of this tag");
-										}
-										
-										
-										
-									}
-								}
-							}
-						}
-					}
-				}	
-			}
-			//ORANGE End
+			// Add extensions fields
+			addGroupMemberExtensions(groupMember, tag, tdt);
 			
 			// add list member to group list
 			List<ECReportGroupListMember> members = matchingGroup.getGroupList().getMember();
@@ -1017,6 +784,246 @@ public class Report {
 			
 		} catch(Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Add group member extensions based on spec extensions
+	 * @param groupMember Group member (tag in group)
+	 * @param tag Tag
+	 * @param tdt TDT helper
+	 * @throws ImplementationException
+	 * @throws ECSpecValidationException
+	 */
+	private void addGroupMemberExtensions(ECReportGroupListMember groupMember, Tag tag, TDTEngine tdt) throws ImplementationException, ECSpecValidationException {
+
+		// ORANGE: check if we need to add user memory in the report
+
+		// Spec contains extension ?
+		ECReportOutputSpecExtension outputExtension = reportSpec.getOutput().getExtension();
+		if (outputExtension == null) return;
+		if (outputExtension.getFieldList() == null) return;
+
+		// Make sure member gets extension instance
+		ECReportGroupListMemberExtension extension = groupMember.getExtension();
+		if (extension == null) {
+			extension = new ECReportGroupListMemberExtension();
+			groupMember.setExtension(extension);
+		}
+
+		extension.setFieldList(new FieldList());
+		List<ECReportMemberField> ecReportMemberFields = extension.getFieldList().getField();
+
+		// represent the user memory to binary format
+		String usermemInBinary = tag.getUserMemory();
+		if (usermemInBinary != null) {
+			usermemInBinary = usermemInBinary.replaceAll("\\s", "");
+			usermemInBinary = new StringBuilder("f").append(usermemInBinary).toString();        //usermem = "f".concat(usermem);
+			usermemInBinary = tdt.hex2bin(usermemInBinary);
+			usermemInBinary = usermemInBinary.substring(4);
+		}
+
+		// Iterate over field specs
+		for (ECReportOutputFieldSpec outputFieldSpec : outputExtension.getFieldList().getField()) {
+
+			// Skip invalid fields
+			if (outputFieldSpec.getFieldspec() == null) continue;
+			if (outputFieldSpec.getFieldspec().getFieldname() == null) continue;
+
+			String fieldName = outputFieldSpec.getFieldspec().getFieldname();
+
+			if (fieldName.equalsIgnoreCase("UserMemory") && outputFieldSpec.isIncludeFieldSpecInReport()) {
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+				ecReportMemberField.setValue(tag.getUserMemory());
+
+				ecReportMemberFields.add(ecReportMemberField);
+			} else if(fieldName.equalsIgnoreCase("epc")) {
+				// default datatype: "epc"
+				// default format: "epc-tag"
+
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+				try {
+					String bin = TagHelper.getBinaryRepresentation(tag);
+					if (null != bin) {
+						final String converted = TagHelper.convert_to_TAG_ENCODING(tag.getTagLength(), tag.getFilter(), tag.getCompanyPrefixLength(), bin, tdt);
+
+						ecReportMemberField.setValue(converted);
+					}
+				} catch (Exception ex) {
+					LOG.error("caught exception during tag transformation: ", ex);
+				}
+				ecReportMemberFields.add(ecReportMemberField);
+
+			}
+			else if(fieldName.equalsIgnoreCase("killPwd")) {
+				//TODO : killPwd fieldname
+				throw new ImplementationException("fieldname \"killPwd\": access to reserved bank is not implemented");
+						/*
+						ECReportMemberField ecReportMemberField = new ECReportMemberField();
+						ecReportMemberField.setName(fieldName);
+						ecReportMemberField.setValue(null);
+
+						// same as "@0.32"
+						field.setBank(0);
+						field.setLength(32);
+						field.setOffset(0);
+						field.setDataType("uint");
+						field.setFormat("hex");
+						ecReportMemberFields.add(ecReportMemberField);
+						*/
+			} else if(fieldName.equalsIgnoreCase("accessPwd")) {
+				//TODO : accessPwd fieldname
+				throw new ImplementationException("fieldname \"accessPwd\": access to reserved bank is not implemented");
+						/*
+						ECReportMemberField field = new ECReportMemberField();
+						field.setName(fieldName);
+
+						// same as "@0.32.32"
+						field.setBank(0);
+						field.setLength(32);
+						field.setOffset(32);
+						field.setDataType("uint");
+						field.setFormat("hex");
+						*/
+			} else if(fieldName.equalsIgnoreCase("epcBank")) {
+				// return the contents of epc bank
+				// datatype: "bits", format: "hex"
+
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+				ecReportMemberField.setValue(tag.getEpcBank());
+				ecReportMemberFields.add(ecReportMemberField);
+
+			} else if(fieldName.equalsIgnoreCase("tidBank")) {
+				// return the contents of tid bank
+				// datatype: "bits", format: "hex"
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+				ecReportMemberField.setValue(tag.getTidBank());	// tag.getTidBank() is already hex string, no need to convert
+				ecReportMemberFields.add(ecReportMemberField);
+
+			} else if(fieldName.equalsIgnoreCase("userBank")) {
+				// return the contents of user memory bank
+				// datatype: "bits", format: "hex"
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+				ecReportMemberField.setValue(tag.getUserMemory());	// tag.getUserMemory() is already hex string, no need to convert
+				ecReportMemberFields.add(ecReportMemberField);
+
+			} else if(fieldName.equalsIgnoreCase("afi")) {
+				// TODO:  application family identifier
+				// same as "@1.8.24"
+				// datatype: "uint", format: "hex"
+
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+
+				String fieldValue = processEpcBank(tag, tdt, 8,
+						24, "uint", "hex");
+				ecReportMemberField.setValue(fieldValue);
+				ecReportMemberFields.add(ecReportMemberField);
+				//throw new ImplementationException("fieldname \"afi\": application family identifier (afi) is not implemented");
+
+			} else if(fieldName.equalsIgnoreCase("nsi")) {
+				// TODO: Numbering System Identifier (NSI)
+				// same as "@1.9.23"
+				// datatype: "uint", format: "hex"
+
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+
+				String fieldValue = processEpcBank(tag, tdt, 9,
+						23, "uint", "hex");
+				ecReportMemberField.setValue(fieldValue);
+
+				ecReportMemberFields.add(ecReportMemberField);
+
+				//throw new ImplementationException("fieldname \"nsi\": Numbering System Identifier (NSI) is not implemented");
+
+			} else if (fieldName.startsWith("@")) {
+				// TODO: fieldnames start with "@"
+				// datatype: "uint", format: "hex"
+
+				String[] part = fieldName.substring(1).split("\\.");
+				int bank = Integer.parseInt(part[0]);
+				int length = Integer.parseInt(part[1]);
+				int offset = Integer.parseInt(part[2]);
+				String datatype = "uint";
+				String format = "hex";
+
+				ECReportMemberField ecReportMemberField = new ECReportMemberField();
+				ecReportMemberField.setName(fieldName);
+
+				if (bank == 0) {
+					throw new ImplementationException("Access to bank "+bank+" is not supported.");
+				} else if(bank == 1) {
+					String fieldValue = processEpcBank(tag, tdt, length, offset, datatype, format);
+					ecReportMemberField.setValue(fieldValue);
+					ecReportMemberFields.add(ecReportMemberField);
+				} else if (bank == 2) {
+					throw new ImplementationException("Access to bank "+bank+" is not supported.");
+				} else if (bank == 3) {
+					if (usermemInBinary != null) {
+						String fieldValue = processUserbank(tdt, usermemInBinary, length, offset, datatype, format);
+						ecReportMemberField.setValue(fieldValue);
+						ecReportMemberFields.add(ecReportMemberField);
+					}
+				} else {
+					throw new ImplementationException("bank "+bank+" does not exist.");
+				}
+
+
+
+			} else {
+				// TODO: symbolic fieldnames
+				// datatype: "uint", format: "hex"
+
+				ECReportMemberField field = new ECReportMemberField();
+				field.setName(fieldName);
+
+				// user-defined symbolic field name
+				String epc_tag = TagHelper.convert_to_TAG_ENCODING(tag.getTagLength(), tag.getFilter(), tag.getCompanyPrefixLength(), tag.getTagAsBinary(), tdt);
+						/*
+						Map<String,SymbolicField> symbolicFields = SymbolicFieldRepo.getInstance().findSymbolicFieldMap(epc_tag);
+						if(symbolicFields == null) {
+							throw new ImplementationException("symbolic field does not exist for the epc "+epc_tag);
+						}
+						SymbolicField symbolicField = symbolicFields.get(fieldName);
+						*/
+				SymbolicField symbolicField = SymbolicFieldRepo.getInstance().getSymbolicField(fieldName);
+				if(symbolicField != null) {
+					int bank = symbolicField.getBank();
+					int length = symbolicField.getLength();
+					int offset = symbolicField.getOffset();
+					String datatype = symbolicField.getDataType() != null? symbolicField.getDataType(): "uint";
+					String format = symbolicField.getFormat() != null? symbolicField.getFormat(): "hex";
+
+					ECReportMemberField ecReportMemberField = new ECReportMemberField();
+					ecReportMemberField.setName(fieldName);
+
+					if (bank == 0) {
+						throw new ImplementationException("Access to bank "+bank+" is not supported.");
+					} else if(bank == 1) {
+						String fieldValue = processEpcBank(tag, tdt, length, offset, datatype, format);
+						ecReportMemberField.setValue(fieldValue);
+						ecReportMemberFields.add(ecReportMemberField);
+					} else if(bank == 2) {
+						throw new ImplementationException("Access to bank "+bank+" is not supported.");
+					} else if(bank == 3) {
+						if (usermemInBinary != null) {
+							String fieldValue = processUserbank(tdt, usermemInBinary, length, offset, datatype, format);
+							ecReportMemberField.setValue(fieldValue);
+							ecReportMemberFields.add(ecReportMemberField);
+						}
+					} else {
+						throw new ImplementationException("bank "+bank+" does not exist.");
+					}
+				} else {
+					LOG.debug("There is no such symbolic fieldname "+fieldName+". skip processing userdata of this tag");
+				}
+			}
 		}
 	}
 
