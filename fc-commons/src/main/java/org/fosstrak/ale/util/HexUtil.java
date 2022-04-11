@@ -36,6 +36,10 @@ public class HexUtil {
 	 * @return hexadecimal string (character count twice as many as bytes)
 	 */
 	public static String byteArrayToHexString(byte[] byteArray) {
+		if (byteArray == null) {
+			return "";
+		}
+
 		StringBuffer buffer = new StringBuffer();
 
 		for (int i = 0; i < byteArray.length; i++) {
@@ -53,6 +57,10 @@ public class HexUtil {
 	 * @return hexadecimal string (character count 8x as many as bytes)
 	 */
 	public static String byteArrayToBinString(byte[] byteArray) {
+		if (byteArray == null) {
+			return "";
+		}
+
 		StringBuffer buffer = new StringBuffer();
 
 		for (int i = 0; i < byteArray.length; i++) {
@@ -72,7 +80,6 @@ public class HexUtil {
 	 * @return byte array
 	 */
 	public static byte[] hexStringToByteArray(String hexString, int minNumBytes) {
-
 		byte[] data = new BigInteger(hexString, 16).toByteArray();
 
 		// Ensure minimum number of bytes
