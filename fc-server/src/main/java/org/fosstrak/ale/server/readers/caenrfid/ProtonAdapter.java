@@ -125,18 +125,6 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
             }
         }
 
-        try {
-            reader.SetIODIRECTION(0x000C);
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            log.info("IO value is " + reader.GetIO());
-        } catch (CAENRFIDException e) {
-            e.printStackTrace();
-        }
-
         /* Read mask and flags */
         byte[] mask = new byte[] { 0, 0, 0, 0 };
         int flags =
@@ -277,7 +265,6 @@ public class ProtonAdapter extends BaseReader implements CAENRFIDEventListener {
     public void recoveryACCESSSPEC3() {
 
     }
-
 
     /**
      * Report tag to observers.
