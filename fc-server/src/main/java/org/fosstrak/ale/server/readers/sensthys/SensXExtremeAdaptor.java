@@ -24,6 +24,8 @@ import org.fosstrak.hal.Observation;
 import RFIDReader.OnTagReadResponse;
 import RFIDReader.RFIDReader;
 import RFIDReader.TagReadInfo;
+import RFIDReader.TagMask;
+import RFIDReader.TagFields;
 import org.fosstrak.tdt.TDTEngine;
 
 import static org.fosstrak.ale.util.HexUtil.*;
@@ -308,6 +310,26 @@ public class SensXExtremeAdaptor extends BaseReader implements OnTagReadResponse
         } catch (Exception e) {
             /* Treat it as "debug" event because invalid/unprogrammed tags should not be treated as errors */
             log.debug("Tag decoding error: " + e.getMessage());
+        }
+
+        /* Read TID (bank 2) */
+        TagMask mask = new TagMask();
+        mask.maskBank = mask.TID_BANK;
+        mask.maskStartBitAddress = 0;
+        mask.maskBitLength = tag.getTagID().length * 8;
+        mask.mask = tag.getTagID();
+
+        TagFields fields = new TagFields();
+        fields.dataBank = 2;
+        fields.dataStartWord = 0;
+        fields.dataWordLength = 12;
+
+        try {
+            fields = reader.ReadTagData(0, mask, fields);
+            log.debug("TID: " + fields.data[0]);
+        } catch (Exception e) {
+            /* Treat it as "debug" event because we want to still get the EPC data */
+            log.debug("Failed to read TID: " + e.getMessage());
         }
 
         addTag(tag);
