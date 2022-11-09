@@ -16,7 +16,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
-import shaded.impinj.octancesdk.*;
+import shaded.com.impinj.octane.*;
 import static org.fosstrak.ale.util.HexUtil.byteArrayToBinString;
 import static org.fosstrak.ale.util.HexUtil.byteArrayToHexString;
 
@@ -259,7 +259,7 @@ public class SpeedwayAdapter extends BaseReader implements TagReportListener {
     public void onTagReported(ImpinjReader rdr, TagReport report) {
         List<Tag> tags = new LinkedList<Tag>();
 
-        for (com.impinj.octane.Tag obj : report.getTags()) {
+        for (shaded.com.impinj.octane.Tag obj : report.getTags()) {
 
             Tag tag = new Tag();
             tag.setReader(getName());

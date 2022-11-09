@@ -226,8 +226,8 @@
         <version>1.0</version>
     </dependency>
     <dependency>
-        <groupId>shaded.impinj</groupId>
-        <artifactId>octanesdk</artifactId>
+        <groupId>shaded.com.impinj</groupId>
+        <artifactId>octane</artifactId>
         <version>3.7.0.0</version>
     </dependency>
     <dependency>
