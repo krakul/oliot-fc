@@ -226,6 +226,11 @@
         <version>1.0</version>
     </dependency>
     <dependency>
+        <groupId>shaded.impinj</groupId>
+        <artifactId>octanesdk</artifactId>
+        <version>3.7.0.0</version>
+    </dependency>
+    <dependency>
         <groupId>gnu</groupId>
         <artifactId>io</artifactId>
         <version>1.0</version>
@@ -257,6 +262,14 @@
           </execution>
         </executions>
       </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+                <source>8</source>
+                <target>8</target>
+            </configuration>
+        </plugin>
     </plugins>
     <resources>
       <resource>
