@@ -17,8 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import shaded.com.impinj.octane.*;
-import static org.fosstrak.ale.util.HexUtil.byteArrayToBinString;
-import static org.fosstrak.ale.util.HexUtil.byteArrayToHexString;
+
+import static org.fosstrak.ale.util.HexUtil.*;
 
 public class SpeedwayAdapter extends BaseReader implements TagReportListener {
 
@@ -268,10 +268,14 @@ public class SpeedwayAdapter extends BaseReader implements TagReportListener {
             tag.addTrace("Antenna-" + obj.getAntennaPortNumber());
             tag.setTimestamp(obj.getLastSeenTime().getLocalDateTime().toInstant().toEpochMilli());
 
+            /* Get EPC as bytes.
+             * ImpinJ sends word groups ABCD 8765 4343.... get rid of spaces. */
+            byte[] epc = hexStringToByteArray(obj.getEpc().toHexString().replace(" ", ""), 12); // 12B = 96 bits
+
             /* ID's */
-            //tag.setTagID(obj.getEpc().toWordList());
-            tag.setTagAsHex(obj.getEpc().toHexString());
-            //tag.setTagAsBinary(byteArrayToBinString(notify.getTagID()));
+            tag.setTagID(epc);
+            tag.setTagAsHex(byteArrayToHexString(epc));
+            tag.setTagAsBinary(byteArrayToBinString(epc));
 
             /* TID ? */
             if (readTID && obj.isFastIdPresent()) {
@@ -288,7 +292,7 @@ public class SpeedwayAdapter extends BaseReader implements TagReportListener {
 
             } catch (Exception e) {
                 /* Treat it as "debug" event because invalid/unprogrammed tags should not be treated as errors */
-                log.debug("Tag decoding error: " + e.getMessage());
+                log.debug("Tag " + tag.getTagAsHex() + " decoding error: " + e.getMessage());
             }
 
             tags.add(tag);
